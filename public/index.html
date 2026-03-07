@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#4CAF50">
+    <meta name="description" content="Un petit mot - Learn languages by marking and translating words in text">
+    <title>Un petit mot - Text Translation Tool</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Un petit mot</h1>
+            <p class="subtitle">Mark words and translate them instantly</p>
+        </header>
+
+        <main>
+            <!-- Text Input Section -->
+            <section class="input-section">
+                <div class="form-group">
+                    <label for="textInput">Paste your text here:</label>
+                    <textarea 
+                        id="textInput" 
+                        placeholder="Paste a long text, then mark words and click 'Mot it!'"
+                        rows="8"
+                    ></textarea>
+                </div>
+                <div class="form-group language-selectors">
+                    <label>Translation  languages</label>
+                    <div class="lang-row">
+                     <select id="sourceLang" aria-label="source language">
+                            <!-- <option value="auto">Detect (auto)</option> -->
+                           Options will be populated from /api/languages 
+                        </select>  
+
+                        <select id="targetLang" aria-label="target language">
+                            Options will be populated from /api/languages 
+                        </select> 
+                    </div>
+                </div>
+                <button id="motItBtn" class="btn btn-primary">🔤 Mot it!</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear</button>
+                <button id="printBtn" class="btn">🖨️ Print</button>
+                <button id="copyBtn" class="btn">📋 Copyc</button>
+                <button id="shareBtn" class="btn">🔗 Share</button>
+            </section>
+
+            <!-- Display Section -->
+            <section class="display-section">
+                <div class="display-container">
+                    <div id="displayText" class="display-text">
+                        <p class="placeholder">Your text with translations will appear here...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics -->
+            <section class="stats-section">
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Words marked:</span>
+                        <span id="markedCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Words translated:</span>
+                        <span id="translatedCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Language pair:</span>
+                        <span id="languagePair" class="stat-value">—</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ for language learners</p>
+        </footer>
+    </div>
+
+    <script src="/service-worker-register.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>
