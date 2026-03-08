@@ -12,13 +12,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Import built-in translation dictionary (BIP format)
-const { dictionary, findTranslation, detectLanguage, translate } = require('./seed/dictionary');
+const { 
+  dictionary, 
+  findTranslation, 
+  detectLanguage, 
+  translate,
+  getAvailableLanguages 
+} = require('./seed/dictionary');
 
 // Available languages in the BIP dictionary
-const AVAILABLE_LANGUAGES = {
-  'en': 'English',
-  'es': 'Spanish'
-};
+const AVAILABLE_LANGUAGES = getAvailableLanguages();
 
 // Languages endpoint - returns available languages
 app.get('/api/languages', (req, res) => {
@@ -31,6 +34,7 @@ app.get('/api/languages', (req, res) => {
 // Translation endpoint using built-in BIP dictionary
 // Accepts: { words: string[], source: string, target: string }
 // Returns: { translations: [{ original, translated, key, sourceLanguage, targetLanguage }] }
+// Supports bidirectional translation: translate between ANY two languages
 app.post('/api/translate', (req, res) => {
   const { words, source = 'auto', target = 'es' } = req.body;
 
@@ -42,25 +46,29 @@ app.post('/api/translate', (req, res) => {
     const result = findTranslation(word);
     
     if (!result.found) {
+      // Word not found, try to detect its language and still attempt translation
+      const detectedSource = detectLanguage(word);
+      const translated = translate(word, target || 'es', detectedSource !== 'unknown' ? detectedSource : source);
+      
       return {
         original: word,
-        translated: `[${word}]`,
-        sourceLanguage: 'unknown',
+        translated: translated || `[${word}]`,
+        sourceLanguage: detectedSource,
         targetLanguage: target || 'es',
-        error: true
+        error: !translated
       };
     }
 
-    // Detect source language and translate to target
+    // Word found in English keys
+    // Detect source language (or use provided source)
     const detectedSource = source === 'auto' ? detectLanguage(word) : source;
-    const translated = translate(word, target || 'es');
+    const translated = translate(word, target || 'es', detectedSource);
 
     return {
       original: word,
       translated: translated || `[${word}]`,
       key: result.key,
-      english: result.english,
-      spanish: result.spanish,
+      allTranslations: result.translationMap,
       sourceLanguage: detectedSource,
       targetLanguage: target || 'es',
       error: !translated

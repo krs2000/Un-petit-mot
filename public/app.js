@@ -93,11 +93,15 @@ textInput.addEventListener('input', updateDisplay);
 document.addEventListener('DOMContentLoaded', initializeLanguageDropdowns);
 
 // Language code to name mapping
-// Only includes languages available in the BIP dictionary
+// Will be populated from the API, but has fallback values
 const LANGUAGE_NAMES = {
     'auto': 'Auto',
     'en': 'English',
-    'es': 'Spanish'
+    'es': 'Spanish',
+    'nl': 'Dutch',
+    'de': 'German',
+    'fr': 'French',
+    'pt': 'Portuguese'
 };
 
 // Text Selection Handling
