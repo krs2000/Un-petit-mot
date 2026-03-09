@@ -4,24 +4,24 @@ const state = {
     translations: {},
     originalText: '',
     sourceLanguage: 'auto',
-    targetLanguage: 'es', // Default to Spanish
-    availableLanguages: {} // Will be populated from /api/languages
+    targetLanguage: 'es',
+    availableLanguages: {}
 };
 
-// DOM Elements
-const textInput = document.getElementById('textInput');
-const motItBtn = document.getElementById('motItBtn');
-const clearBtn = document.getElementById('clearBtn');
-const printBtn = document.getElementById('printBtn');
-const copyBtn = document.getElementById('copyBtn');
-const shareBtn = document.getElementById('shareBtn');
-const displayText = document.getElementById('displayText');
-const markedCount = document.getElementById('markedCount');
-const translatedCount = document.getElementById('translatedCount');
-const languagePair = document.getElementById('languagePair');
-
-const sourceLang = document.getElementById('sourceLang');
-const targetLang = document.getElementById('targetLang');
+// DOM Elements - Helper function
+const el = id => document.getElementById(id);
+const textInput = el('textInput');
+const motItBtn = el('motItBtn');
+const clearBtn = el('clearBtn');
+const printBtn = el('printBtn');
+const copyBtn = el('copyBtn');
+const shareBtn = el('shareBtn');
+const displayText = el('displayText');
+const markedCount = el('markedCount');
+const translatedCount = el('translatedCount');
+const languagePair = el('languagePair');
+const sourceLang = el('sourceLang');
+const targetLang = el('targetLang');
 
 // Initialize language dropdowns from server
 async function initializeLanguageDropdowns() {
@@ -30,125 +30,96 @@ async function initializeLanguageDropdowns() {
         const data = await response.json();
         const languages = data.languages;
         
-        // Store for later use
         state.availableLanguages = languages;
         
-        // Populate source language dropdown
-        const sourceOptions = sourceLang.querySelectorAll('option');
-        const sourceAutoOption = sourceOptions[0]; // Keep "Detect (auto)" option
+        // Populate both dropdowns
+        const populateSelect = (select, includeAuto = false) => {
+            if (includeAuto) {
+                const opt = document.createElement('option');
+                opt.value = 'auto';
+                opt.textContent = 'Detect (auto)';
+                select.appendChild(opt);
+            }
+            Object.entries(languages).forEach(([code, name]) => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        };
         
-        for (const [code, name] of Object.entries(languages)) {
-            const option = document.createElement('option');
-            option.value = code;
-            option.textContent = name;
-            sourceLang.appendChild(option);
-        }
+        populateSelect(sourceLang, true);
+        populateSelect(targetLang);
         
-        // Populate target language dropdown
-        for (const [code, name] of Object.entries(languages)) {
-            const option = document.createElement('option');
-            option.value = code;
-            option.textContent = name;
-            targetLang.appendChild(option);
-        }
-        
-        // Set default source language (English)
-        if (languages['en']) {
-            sourceLang.value = 'en';
-            state.sourceLanguage = 'en';
-        } else {
-            // Fallback to first available language
-            const firstLangCode = Object.keys(languages)[0];
-            sourceLang.value = firstLangCode;
-            state.sourceLanguage = firstLangCode;
-        }
-        
-        // Set default target language (Spanish)
-        if (languages['es']) {
-            targetLang.value = 'es';
-            state.targetLanguage = 'es';
-        } else {
-            // Fallback to first available language
-            const firstLang = Object.keys(languages)[0];
-            targetLang.value = firstLang;
-            state.targetLanguage = firstLang;
-        }
+        // Set defaults
+        sourceLang.value = languages['en'] ? 'en' : Object.keys(languages)[0];
+        targetLang.value = languages['es'] ? 'es' : Object.keys(languages)[0];
+        state.sourceLanguage = sourceLang.value;
+        state.targetLanguage = targetLang.value;
     } catch (error) {
-        console.error('Failed to load available languages:', error);
-        // Fallback to hardcoded languages if API fails
-        const fallbackLanguages = { 'en': 'English', 'es': 'Spanish' };
-        for (const [code, name] of Object.entries(fallbackLanguages)) {
-            const option = document.createElement('option');
-            option.value = code;
-            option.textContent = name;
-            sourceLang.appendChild(option);
-            
-            const targetOption = document.createElement('option');
-            targetOption.value = code;
-            targetOption.textContent = name;
-            targetLang.appendChild(targetOption);
-        }
+        console.error('Failed to load languages:', error);
+        const fallback = { 'en': 'English', 'es': 'Spanish' };
+        Object.entries(fallback).forEach(([code, name]) => {
+            ['sourceLang', 'targetLang'].forEach(id => {
+                const opt = document.createElement('option');
+                opt.value = code;
+                opt.textContent = name;
+                el(id).appendChild(opt);
+            });
+        });
         targetLang.value = 'es';
     }
 }
 
 // Event Listeners
-motItBtn.addEventListener('click', handleMotIt);
-clearBtn.addEventListener('click', handleClear);
-printBtn.addEventListener('click', handlePrint);
-copyBtn.addEventListener('click', handleCopy);
-shareBtn.addEventListener('click', handleShare);
-textInput.addEventListener('input', updateDisplay);
+[
+    [motItBtn, 'click', handleMotIt],
+    [clearBtn, 'click', handleClear],
+    [printBtn, 'click', () => window.print()],
+    [copyBtn, 'click', handleCopy],
+    [shareBtn, 'click', handleShare],
+    [textInput, 'input', updateDisplay],
+    [sourceLang, 'change', e => { state.sourceLanguage = e.target.value; updateStats(); }],
+    [targetLang, 'change', e => { state.targetLanguage = e.target.value; updateStats(); }],
+    [document, 'mouseup', handleTextSelection],
+    [document, 'touchend', handleTextSelection],
+].forEach(([elem, evt, handler]) => elem.addEventListener(evt, handler));
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', initializeLanguageDropdowns);
 
 // Language code to name mapping
-// Will be populated from the API, but has fallback values
 const LANGUAGE_NAMES = {
-    'auto': 'Auto',
-    'en': 'English',
-    'es': 'Spanish',
-    'nl': 'Dutch',
-    'de': 'German',
-    'fr': 'French',
-    'pt': 'Portuguese'
+    'auto': 'Auto', 'en': 'English', 'es': 'Spanish', 'nl': 'Dutch',
+    'de': 'German', 'fr': 'French', 'pt': 'Portuguese'
 };
 
-// Text Selection Handling
-document.addEventListener('mouseup', handleTextSelection);
-document.addEventListener('touchend', handleTextSelection);
-
 /**
- * Handle "Mot it!" button click - translate marked words
+ * Handle "Translate" button click - translate marked words
  */
 async function handleMotIt() {
     if (state.markedWords.size === 0) {
-        alert('Please mark some words first!');
+        showNotification('Please mark some words first!', 'info');
         return;
     }
 
-    const wordsArray = Array.from(state.markedWords);
-    
     try {
         motItBtn.disabled = true;
-        motItBtn.textContent = '⏳ Translating...';
+        motItBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Translating...';
 
-        // include selected source/target languages
-        const payload = { words: wordsArray, source: sourceLang.value, target: targetLang.value };
         const response = await fetch('/api/translate', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                words: Array.from(state.markedWords), 
+                source: sourceLang.value, 
+                target: targetLang.value 
+            })
         });
 
         if (!response.ok) throw new Error('Translation failed');
 
         const data = await response.json();
-        
-        // Store language info and translations
         state.sourceLanguage = data.sourceLanguage || sourceLang.value;
         state.targetLanguage = data.targetLanguage || targetLang.value;
         
@@ -158,44 +129,39 @@ async function handleMotIt() {
 
         updateDisplay();
         updateStats();
+        showNotification(`✓ Translated ${data.translations.filter(t => !t.error).length} words`, 'success');
     } catch (error) {
         console.error('Translation error:', error);
-        alert('Failed to translate. Please try again.');
+        showNotification('Translation failed. Please try again.', 'error');
     } finally {
         motItBtn.disabled = false;
-        motItBtn.textContent = '🔤 Mot it!';
+        motItBtn.innerHTML = '<i class="bi bi-play-circle"></i> Translate';
     }
 }
 
-/**
- * Print current translated display area
- */
-function handlePrint() {
-    window.print();
-}
+// Build translation display text
+const buildTranslationText = () => {
+    const lines = [];
+    Array.from(state.markedWords).forEach(word => {
+        const t = state.translations[word.toLowerCase()] || '';
+        lines.push(`${word} → ${t}`);
+    });
+    return lines.join('\n');
+};
 
 /**
  * Copy a summary of marked words and translations to clipboard
  */
 function handleCopy() {
     if (state.markedWords.size === 0) {
-        alert('No marked words to copy');
+        showNotification('No marked words to copy', 'info');
         return;
     }
-
-    const lines = [];
-    Array.from(state.markedWords).forEach(word => {
-        const t = state.translations[word.toLowerCase()] || '';
-        lines.push(`${word} → ${t}`);
-    });
-
-    const text = lines.join('\n');
-
-    navigator.clipboard.writeText(text).then(() => {
-        alert('Copied translations to clipboard');
+    navigator.clipboard.writeText(buildTranslationText()).then(() => {
+        showNotification('✓ Translations copied to clipboard', 'success');
     }).catch(err => {
         console.error('Copy failed', err);
-        alert('Copy failed');
+        showNotification('Failed to copy', 'error');
     });
 }
 
@@ -204,30 +170,21 @@ function handleCopy() {
  */
 function handleShare() {
     if (state.markedWords.size === 0) {
-        alert('No marked words to share');
+        showNotification('No marked words to share', 'info');
         return;
     }
 
-    const lines = [];
-    Array.from(state.markedWords).forEach(word => {
-        const t = state.translations[word.toLowerCase()] || '';
-        lines.push(`${word} → ${t}`);
-    });
-
-    const text = lines.join('\n');
-
+    const text = buildTranslationText();
     if (navigator.share) {
-        navigator.share({
-            title: 'Un petit mot — translations',
-            text
-        }).catch(err => console.error('Share failed', err));
+        navigator.share({ title: 'Un petit mot — translations', text }).catch(err => {
+            if (err.name !== 'AbortError') console.error('Share failed', err);
+        });
     } else {
-        // Fallback: copy to clipboard
         navigator.clipboard.writeText(text).then(() => {
-            alert('Shared content copied to clipboard (no native share available)');
+            showNotification('✓ Copied to clipboard', 'success');
         }).catch(err => {
             console.error('Share fallback failed', err);
-            alert('Share failed');
+            showNotification('Failed to share', 'error');
         });
     }
 }
@@ -236,12 +193,9 @@ function handleShare() {
  * Handle text selection for marking words/phrases
  */
 function handleTextSelection() {
-    const selection = window.getSelection();
-    const selectedText = selection.toString().trim();
-
+    const selectedText = window.getSelection().toString().trim();
     if (selectedText.length === 0) return;
 
-    // Toggle marking on selection
     if (state.markedWords.has(selectedText)) {
         state.markedWords.delete(selectedText);
         delete state.translations[selectedText.toLowerCase()];
@@ -251,7 +205,7 @@ function handleTextSelection() {
 
     updateDisplay();
     updateStats();
-    selection.removeAllRanges();
+    window.getSelection().removeAllRanges();
 }
 
 /**
@@ -266,32 +220,19 @@ function updateDisplay() {
     }
 
     let html = '<p>';
-    const words = state.originalText.split(/(\s+)/); // Keep whitespace
-
-    words.forEach(word => {
+    state.originalText.split(/(\s+)/).forEach(word => {
         if (/^\s+$/.test(word)) {
-            // Preserve whitespace
             html += word;
         } else if (state.markedWords.has(word)) {
-            // Marked word
-            html += `<span class="word marked">${escapeHtml(word)}`;
-            
-            // Add translation if available
-            if (state.translations[word.toLowerCase()]) {
-                html += `<span class="translation">${escapeHtml(state.translations[word.toLowerCase()])}</span>`;
-            }
-            
-            html += '</span>';
+            const trans = state.translations[word.toLowerCase()];
+            html += `<span class="word marked">${escapeHtml(word)}${trans ? `<span class="translation">${escapeHtml(trans)}</span>` : ''}</span>`;
         } else {
-            // Regular word - clickable
             html += `<span class="word">${escapeHtml(word)}</span>`;
         }
     });
 
     html += '</p>';
     displayText.innerHTML = html;
-
-    // Add click handlers to non-marked words
     addWordClickHandlers();
 }
 
@@ -299,21 +240,13 @@ function updateDisplay() {
  * Add click handlers to individual words
  */
 function addWordClickHandlers() {
-    const words = document.querySelectorAll('.word:not(.marked)');
-    
-    words.forEach(wordSpan => {
+    document.querySelectorAll('.word:not(.marked)').forEach(wordSpan => {
         wordSpan.addEventListener('click', function(e) {
             e.stopPropagation();
             const word = this.textContent.trim();
-            
             if (word.length > 0) {
-                if (state.markedWords.has(word)) {
-                    state.markedWords.delete(word);
-                    delete state.translations[word.toLowerCase()];
-                } else {
-                    state.markedWords.add(word);
-                }
-                
+                state.markedWords.has(word) ? state.markedWords.delete(word) : state.markedWords.add(word);
+                delete state.translations[word.toLowerCase()];
                 updateDisplay();
                 updateStats();
             }
@@ -325,14 +258,13 @@ function addWordClickHandlers() {
  * Clear all content and state
  */
 function handleClear() {
-    if (confirm('Clear all content? This cannot be undone.')) {
-        textInput.value = '';
-        state.markedWords.clear();
-        state.translations = {};
-        state.originalText = '';
-        updateDisplay();
-        updateStats();
-    }
+    textInput.value = '';
+    state.markedWords.clear();
+    state.translations = {};
+    state.originalText = '';
+    updateDisplay();
+    updateStats();
+    showNotification('✓ Cleared all content', 'info');
 }
 
 /**
@@ -341,24 +273,37 @@ function handleClear() {
 function updateStats() {
     markedCount.textContent = state.markedWords.size;
     translatedCount.textContent = Object.keys(state.translations).length;
-    
-    // Display language pair
     const sourceName = LANGUAGE_NAMES[state.sourceLanguage] || state.sourceLanguage;
     const targetName = LANGUAGE_NAMES[state.targetLanguage] || state.targetLanguage;
     languagePair.textContent = `${sourceName} → ${targetName}`;
 }
 
 /**
+ * Show toast notification
+ */
+function showNotification(message, type = 'success') {
+    const toastEl = el('notificationToast');
+    const toastMsg = el('toastMessage');
+    const toastHeader = toastEl.querySelector('.toast-header');
+    
+    toastMsg.textContent = message;
+    
+    const icons = { success: 'check-circle text-success', error: 'exclamation-circle text-danger', info: 'info-circle text-info' };
+    const titles = { success: 'Success', error: 'Error', info: 'Info' };
+    const icon = icons[type] || icons.info;
+    const title = titles[type] || 'Info';
+    
+    toastHeader.innerHTML = `<i class="bi bi-${icon} me-2"></i><strong class="me-auto">${title}</strong><button type="button" class="btn-close" data-bs-dismiss="toast"></button>`;
+    
+    toastEl.classList.remove('hide');
+    new bootstrap.Toast(toastEl, { autohide: true, delay: 3000 }).show();
+}
+
+/**
  * Escape HTML special characters
  */
 function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
+    const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
     return text.replace(/[&<>"']/g, m => map[m]);
 }
 

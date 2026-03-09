@@ -3,85 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#4CAF50">
-    <meta name="description" content="Un petit mot - Learn languages by marking and translating words in text">
-    <title>Un petit mot - Text Translation Tool</title>
+    <meta name="theme-color" content="#6366f1">
+    <meta name="description" content="Un petit mot - Elegant language learning tool. Mark words and translate them instantly across 6 languages.">
+    <title>Un petit mot - Language Learning Made Simple</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192x192.png">
     <link rel="apple-touch-icon" href="/images/icon-192x192.png">
     <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>📚 Un petit mot</h1>
-            <p class="subtitle">Mark words and translate them instantly</p>
-        </header>
+<body class="bg-light">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container-lg">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+                <i class="bi bi-book-fill text-primary" style="font-size: 1.5rem;"></i>
+                <span>Un petit mot</span>
+            </a>
+            <span class="navbar-text text-muted ms-auto d-none d-md-inline">
+                Learn languages by marking and translating
+            </span>
+        </div>
+    </nav>
 
-        <main>
-            <!-- Text Input Section -->
-            <section class="input-section">
-                <div class="form-group">
-                    <label for="textInput">Paste your text here:</label>
-                    <textarea 
-                        id="textInput" 
-                        placeholder="Paste a long text, then mark words and click 'Mot it!'"
-                        rows="8"
-                    ></textarea>
+    <!-- Main Content -->
+    <main class="py-4 py-md-5">
+        <div class="container-lg">
+            <!-- Header Section -->
+            <div class="row mb-4 mb-md-5">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-5 fw-bold mb-3">
+                        <i class="bi bi-translate text-primary"></i> Un petit mot
+                    </h1>
+                    <p class="lead text-muted mb-0">
+                        Paste any text, mark words, and instantly translate them across 6 languages
+                    </p>
                 </div>
-                <div class="form-group language-selectors">
-                    <label>Translation  languages</label>
-                    <div class="lang-row">
-                     <select id="sourceLang" aria-label="source language">
-                            <!-- <option value="auto">Detect (auto)</option> -->
-                           Options will be populated from /api/languages 
-                        </select>  
+            </div>
 
-                        <select id="targetLang" aria-label="target language">
-                            Options will be populated from /api/languages 
-                        </select> 
+            <!-- Main Layout: Two Columns on Desktop, Stack on Mobile -->
+            <div class="row g-4">
+                <!-- Left Column: Input & Controls -->
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-header bg-white border-bottom">
+                            <h5 class="mb-0 d-flex align-items-center gap-2">
+                                <i class="bi bi-pencil-square text-primary"></i>
+                                Source Text
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Text Input -->
+                            <div class="mb-4">
+                                <label for="textInput" class="form-label fw-semibold">
+                                    Enter or paste your text
+                                </label>
+                                <textarea 
+                                    id="textInput" 
+                                    class="form-control form-control-lg"
+                                    placeholder="Paste text in any language (English, Spanish, French, Dutch, German, or Portuguese)..."
+                                    rows="10"
+                                    style="font-size: 0.95rem;"></textarea>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="bi bi-info-circle"></i> Mark words by selecting them, then click "Translate" to see translations.
+                                </small>
+                            </div>
+
+                            <!-- Language Selectors -->
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold mb-3">
+                                    <i class="bi bi-globe"></i> Translation Languages
+                                </label>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="sourceLang" class="form-label small text-muted">Source Language</label>
+                                        <select id="sourceLang" class="form-select form-select-lg" aria-label="Source language">
+                                            <option value="en">English</option>
+                                            <!-- Options populated from API -->
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="targetLang" class="form-label small text-muted">Target Language</label>
+                                        <select id="targetLang" class="form-select form-select-lg" aria-label="Target language">
+                                            <option value="es">Spanish</option>
+                                            <!-- Options populated from API -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center my-3">
+                                    <div class="flex-grow-1 border-top"></div>
+                                    <span class="mx-2 text-muted small">from / to</span>
+                                    <div class="flex-grow-1 border-top"></div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-grid gap-2 gap-sm-3 mb-3">
+                                <button id="motItBtn" class="btn btn-primary btn-lg fw-semibold" type="button">
+                                    <i class="bi bi-play-circle"></i> Translate
+                                </button>
+                            </div>
+
+                            <!-- Secondary Buttons -->
+                            <div class="btn-group w-100" role="group">
+                                <button id="copyBtn" class="btn btn-outline-secondary" type="button" title="Copy translations">
+                                    <i class="bi bi-clipboard"></i>
+                                    <span class="d-none d-sm-inline ms-1">Copy</span>
+                                </button>
+                                <button id="shareBtn" class="btn btn-outline-secondary" type="button" title="Share translations">
+                                    <i class="bi bi-share"></i>
+                                    <span class="d-none d-sm-inline ms-1">Share</span>
+                                </button>
+                                <button id="printBtn" class="btn btn-outline-secondary" type="button" title="Print">
+                                    <i class="bi bi-printer"></i>
+                                    <span class="d-none d-sm-inline ms-1">Print</span>
+                                </button>
+                                <button id="clearBtn" class="btn btn-outline-danger" type="button" title="Clear all">
+                                    <i class="bi bi-trash"></i>
+                                    <span class="d-none d-sm-inline ms-1">Clear</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button id="motItBtn" class="btn btn-primary">🔤 Mot it!</button>
-                <button id="clearBtn" class="btn btn-secondary">Clear</button>
-                <button id="printBtn" class="btn">🖨️ Print</button>
-                <button id="copyBtn" class="btn">📋 Copyc</button>
-                <button id="shareBtn" class="btn">🔗 Share</button>
-            </section>
 
-            <!-- Display Section -->
-            <section class="display-section">
-                <div class="display-container">
-                    <div id="displayText" class="display-text">
-                        <p class="placeholder">Your text with translations will appear here...</p>
+                <!-- Right Column: Output & Statistics -->
+                <div class="col-lg-7">
+                    <!-- Translation Output -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-bottom">
+                            <h5 class="mb-0 d-flex align-items-center gap-2">
+                                <i class="bi bi-chat-dots text-success"></i>
+                                Translations
+                            </h5>
+                        </div>
+                        <div class="card-body" style="min-height: 400px;">
+                            <div id="displayText" class="display-text">
+                                <div class="text-center text-muted py-5">
+                                    <i class="bi bi-arrow-down display-4 d-block mb-3 opacity-50"></i>
+                                    <p class="mb-0">Select text and click "Translate" to see translations here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="card border-0 shadow-sm bg-primary text-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <p class="card-text opacity-75 small mb-0">Words Marked</p>
+                                            <h4 class="mb-0 fw-bold" id="markedCount">0</h4>
+                                        </div>
+                                        <i class="bi bi-bookmark-fill opacity-50" style="font-size: 2rem;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card border-0 shadow-sm bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <p class="card-text opacity-75 small mb-0">Translated</p>
+                                            <h4 class="mb-0 fw-bold" id="translatedCount">0</h4>
+                                        </div>
+                                        <i class="bi bi-check-circle-fill opacity-50" style="font-size: 2rem;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm bg-info text-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <p class="card-text opacity-75 small mb-0">Language Pair</p>
+                                            <h5 class="mb-0 fw-bold" id="languagePair">—</h5>
+                                        </div>
+                                        <i class="bi bi-globe2 opacity-50" style="font-size: 2rem;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Statistics -->
-            <section class="stats-section">
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Words marked:</span>
-                        <span id="markedCount" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Words translated:</span>
-                        <span id="translatedCount" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Language pair:</span>
-                        <span id="languagePair" class="stat-value">—</span>
+            <!-- Features Section -->
+            <div class="row mt-5 pt-5 border-top">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="text-center">
+                        <i class="bi bi-globe text-primary mb-3" style="font-size: 2.5rem;"></i>
+                        <h6 class="fw-semibold">6 Languages</h6>
+                        <p class="text-muted small mb-0">English, Spanish, French, Dutch, German, Portuguese</p>
                     </div>
                 </div>
-            </section>
-        </main>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <div class="text-center">
+                        <i class="bi bi-lightning-fill text-warning mb-3" style="font-size: 2.5rem;"></i>
+                        <h6 class="fw-semibold">Instant Translation</h6>
+                        <p class="text-muted small mb-0">Mark words and get immediate translations</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="bi bi-binoculars text-success mb-3" style="font-size: 2.5rem;"></i>
+                        <h6 class="fw-semibold">Learn Efficiently</h6>
+                        <p class="text-muted small mb-0">Understand text by translating specific words</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-        <footer>
-            <p>Made with ❤️ for language learners</p>
-        </footer>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-white border-top py-4 mt-5">
+        <div class="container-lg">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-heart-fill text-danger"></i> Made with care for language learners
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <small class="text-muted">
+                        <a href="#" class="text-decoration-none text-muted me-3">About</a>
+                        <a href="#" class="text-decoration-none text-muted me-3">Privacy</a>
+                        <a href="#" class="text-decoration-none text-muted">Contact</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
 
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Scripts -->
     <script src="/service-worker-register.js"></script>
     <script src="/app.js"></script>
 </body>
