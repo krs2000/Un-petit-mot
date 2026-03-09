@@ -52,6 +52,17 @@ async function initializeLanguageDropdowns() {
             targetLang.appendChild(option);
         }
         
+        // Set default source language (English)
+        if (languages['en']) {
+            sourceLang.value = 'en';
+            state.sourceLanguage = 'en';
+        } else {
+            // Fallback to first available language
+            const firstLangCode = Object.keys(languages)[0];
+            sourceLang.value = firstLangCode;
+            state.sourceLanguage = firstLangCode;
+        }
+        
         // Set default target language (Spanish)
         if (languages['es']) {
             targetLang.value = 'es';
