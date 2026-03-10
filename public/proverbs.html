@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proverbs of the World</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --en: #1a1a2e;
+      --es: #7b2d2d;
+      --fr: #1c3d5a;
+      --nl: #1a3d2b;
+      --de: #3d2b1a;
+      --pt: #2d1a4a;
+      --accent: #e8c97e;
+      --bg: #f4f0e8;
+      --card-bg: #fff;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(232,201,126,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(107,107,107,0.06) 0%, transparent 40%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--en);
+      padding: 4rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::before {
+      content: '❝';
+      position: absolute;
+      font-size: 22rem;
+      color: rgba(255,255,255,0.03);
+      top: -60px; left: -30px;
+      font-family: 'Playfair Display', serif;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .site-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    .site-header h1 span {
+      color: var(--accent);
+      font-style: italic;
+    }
+    .site-header p {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.95rem;
+      font-weight: 300;
+      margin-bottom: 0;
+    }
+    .badge-count {
+      background: var(--accent);
+      color: #1a1a1a;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.25em 0.65em;
+      border-radius: 2rem;
+      vertical-align: middle;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── NAV TABS ── */
+    .lang-nav {
+      background: #fff;
+      border-bottom: 1px solid #e5e0d5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .lang-nav .nav-link {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 1rem 1.2rem;
+      border: none;
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      transition: color 0.2s, border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      white-space: nowrap;
+    }
+    .lang-nav .nav-link:hover { color: var(--text); }
+    .lang-nav .nav-link.active {
+      color: var(--text);
+      border-bottom-color: var(--accent);
+      background: transparent;
+    }
+    .flag { font-size: 1.1rem; }
+
+    /* ── SEARCH ── */
+    .search-bar { padding: 1.5rem 0; }
+    .search-bar .input-group-text {
+      background: #fff;
+      border-right: none;
+      color: var(--muted);
+    }
+    .search-bar input {
+      border-left: none;
+      font-size: 0.9rem;
+    }
+    .search-bar input:focus { box-shadow: none; border-color: #ced4da; }
+
+    /* ── LANGUAGE HEADINGS ── */
+    .lang-heading {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .lang-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 3rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .lang-pill.en { background: var(--en); }
+    .lang-pill.es { background: var(--es); }
+    .lang-pill.fr { background: var(--fr); }
+    .lang-pill.nl { background: var(--nl); }
+    .lang-pill.de { background: var(--de); }
+    .lang-pill.pt { background: var(--pt); }
+
+    .lang-divider {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, #ccc8be, transparent);
+    }
+
+    /* ── PROVERB CARD ── */
+    .proverb-card {
+      background: var(--card-bg);
+      border: 1px solid #e8e3d8;
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      position: relative;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease both;
+    }
+    .proverb-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.09);
+    }
+    .proverb-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 12px 0 0 12px;
+    }
+    .proverb-card.en::before { background: var(--en); }
+    .proverb-card.es::before { background: var(--es); }
+    .proverb-card.fr::before { background: var(--fr); }
+    .proverb-card.nl::before { background: var(--nl); }
+    .proverb-card.de::before { background: var(--de); }
+    .proverb-card.pt::before { background: var(--pt); }
+
+    .proverb-num {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #bbb;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+    .proverb-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+    .proverb-meaning {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.5;
+      padding-top: 0.5rem;
+      border-top: 1px solid #f0ece4;
+    }
+    .proverb-meaning strong {
+      font-weight: 500;
+      color: #999;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-right: 0.4rem;
+    }
+
+    /* ── NO RESULTS ── */
+    .no-results {
+      text-align: center;
+      padding: 3rem 0;
+      color: var(--muted);
+      display: none;
+    }
+    .no-results.show { display: block; }
+    .no-results .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+    /* ── ANIMATION ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 3rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid #e5e0d5;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container">
+      <h1>Proverbs of the <span>World</span></h1>
+      <p>108 proverbs across 6 languages &nbsp;<span class="badge-count">EN · ES · FR · NL · DE · PT</span></p>
+    </div>
+  </header>
+
+  <!-- STICKY LANGUAGE NAV -->
+  <nav class="lang-nav">
+    <div class="container">
+      <ul class="nav" id="langTabs">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" data-lang="all"><span class="flag">🌐</span> All</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="en"><span class="flag">🇬🇧</span> English</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="es"><span class="flag">🇪🇸</span> Spanish</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="fr"><span class="flag">🇫🇷</span> French</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="nl"><span class="flag">🇳🇱</span> Dutch</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="de"><span class="flag">🇩🇪</span> German</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-lang="pt"><span class="flag">🇵🇹</span> Portuguese</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- SEARCH BAR -->
+  <div class="container search-bar">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text border">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </span>
+          <input type="text" id="searchInput" class="form-control border" placeholder="Search proverbs or meanings…"/>
+        </div>
+      </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <small id="resultCount" class="text-muted"></small>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROVERBS GRID (rendered by proverbs.js) -->
+  <main class="container pb-5">
+    <div id="proverbsContainer"></div>
+    <div class="no-results" id="noResults">
+      <div class="icon">🔍</div>
+      <p>No proverbs match your search.</p>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      Proverbs seed · 6 languages · 18 entries each
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="proverbs.js"></script>
+
+</body>
+</html>
