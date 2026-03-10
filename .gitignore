@@ -31,6 +31,7 @@ AiReport
 Thumbs.db
 .DS_Store
 
+landing
 # Build and distribution
 dist/
 build/
