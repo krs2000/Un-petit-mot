@@ -11,6 +11,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get("/landing", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "landing.html"));
+});
+app.get("/proverbs", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "proverbs.html"));
+});
 // Import built-in translation dictionary (BIP format)
 const { 
   dictionary, 
@@ -84,7 +90,7 @@ app.post('/api/translate', (req, res) => {
 
 // Serve the main HTML file for all other routes (SPA fallback)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html',));
 });
 
 app.listen(PORT, () => {
