@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lingua — Learn Any Language</title>
+   <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bs-primary: #1a6cf6;
+      --blue: #1a6cf6;
+      --blue-light: #e8f0fe;
+      --muted: #6b7280;
+      --border: #e5e9f2;
+      --off: #f7f8fc;
+    }
+
+    body { font-family: 'Geist', sans-serif; -webkit-font-smoothing: antialiased; background: #fff; color: #0d0f14; }
+
+    /* NAVBAR */
+    .navbar { height: 60px; background: rgba(255,255,255,0.92) !important; backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .navbar-brand { font-family: 'Instrument Serif', serif; font-size: 1.2rem; color: #0d0f14 !important; letter-spacing: -0.02em; }
+    .navbar-brand em { color: var(--blue); font-style: italic; }
+    .nav-link { font-size: 0.8rem; color: var(--muted) !important; transition: color 0.2s; }
+    .nav-link:hover { color: #0d0f14 !important; }
+    .btn-nav-ghost { font-size: 0.8rem; font-weight: 500; color: #0d0f14; }
+    .btn-nav-ghost:hover { color: var(--blue); }
+    .btn-primary-sm {
+      background: var(--blue); color: #fff; font-size: 0.8rem; font-weight: 500;
+      padding: 0.5rem 1.15rem; border-radius: 8px; border: none;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .btn-primary-sm:hover { opacity: 0.88; color: #fff; }
+
+    /* HERO */
+    .hero { padding: 130px 0 80px; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: var(--blue-light); color: var(--blue);
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.03em;
+      padding: 0.35rem 0.9rem; border-radius: 100px; margin-bottom: 1.6rem;
+    }
+    .badge-dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; flex-shrink: 0; }
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      line-height: 1.1; letter-spacing: -0.03em; font-weight: 400;
+    }
+    .hero h1 em { font-style: italic; color: var(--blue); }
+    .hero-sub { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 44ch; margin: 1.1rem auto 0; }
+    .hero-note { font-size: 0.72rem; color: var(--muted); margin-top: 0.9rem; }
+    .btn-hero {
+      background: var(--blue); color: #fff; font-size: 0.875rem; font-weight: 500;
+      padding: 0.8rem 1.8rem; border-radius: 10px; border: none; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(26,108,246,0.25); transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-hero:hover { opacity: 0.9; transform: translateY(-1px); color: #fff; }
+    .btn-hero-outline {
+      font-size: 0.875rem; font-weight: 500; color: #0d0f14;
+      text-decoration: none; padding: 0.8rem 1.6rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: transparent; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-hero-outline:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* SECTION LABELS */
+    .section-label { font-size: 0.72rem; font-weight: 500; color: var(--blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .section-title { font-family: 'Instrument Serif', serif; font-size: clamp(1.8rem, 3.5vw, 2.5rem); line-height: 1.15; letter-spacing: -0.03em; font-weight: 400; }
+    .section-title em { font-style: italic; color: var(--blue); }
+    .section-sub { font-size: 0.92rem; color: var(--muted); line-height: 1.7; max-width: 44ch; margin-top: 0.6rem; }
+
+    /* FEATURE CARDS */
+    .feat-card { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1.6rem; height: 100%; transition: background 0.2s; }
+    .feat-card:hover { background: var(--off); }
+    .feat-icon { width: 36px; height: 36px; background: var(--blue-light); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 0.9rem; }
+    .feat-title { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.3rem; }
+    .feat-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    /* HOW IT WORKS */
+    .how-bg { background: var(--off); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .step-num { width: 28px; height: 28px; flex-shrink: 0; background: var(--blue); color: #fff; border-radius: 8px; font-size: 0.72rem; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+    .step-title { font-size: 0.875rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .step-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.55; margin: 0; }
+
+    /* VIDEO */
+    .video-wrap { border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; box-shadow: 0 16px 48px rgba(0,0,0,0.1); background: #0d1829; position: relative; cursor: pointer; }
+    .video-thumb { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; position: absolute; inset: 0; background: linear-gradient(135deg, #0a1628 0%, #162b52 100%); }
+    .video-thumb::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 55% 45%, rgba(26,108,246,0.3) 0%, transparent 65%); }
+    .play-ring { width: 58px; height: 58px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; transition: background 0.2s, border-color 0.2s, transform 0.2s; position: relative; z-index: 1; }
+    .video-thumb:hover .play-ring { background: var(--blue); border-color: var(--blue); transform: scale(1.05); }
+    .play-tri { width: 0; height: 0; border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 16px solid white; margin-left: 3px; }
+    .video-label { font-size: 0.75rem; color: rgba(255,255,255,0.4); letter-spacing: 0.05em; position: relative; z-index: 1; font-family: 'Geist', sans-serif; }
+    .video-wrap iframe { width: 100%; height: 100%; border: none; display: block; position: absolute; inset: 0; }
+
+    /* LANGUAGES */
+    .lang-pill { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.48rem 0.95rem; border: 1.5px solid var(--border); border-radius: 100px; font-size: 0.78rem; transition: border-color 0.2s, background 0.2s, color 0.2s; cursor: default; }
+    .lang-pill:hover { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+
+    /* CTA BAND */
+    .cta-band { background: var(--blue); padding: 5rem 0; text-align: center; }
+    .cta-band h2 { font-family: 'Instrument Serif', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); color: #fff; font-weight: 400; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.6rem; }
+    .cta-band h2 em { font-style: italic; opacity: 0.7; }
+    .cta-band p { font-size: 0.88rem; color: rgba(255,255,255,0.55); margin-bottom: 2rem; }
+    .cta-input { padding: 0.75rem 1.2rem; border: none; border-radius: 10px; font-size: 0.875rem; width: 260px; outline: none; font-family: 'Geist', sans-serif; }
+    .cta-submit { padding: 0.75rem 1.6rem; background: #0d0f14; color: #fff; border: none; border-radius: 10px; font-size: 0.875rem; font-weight: 500; cursor: pointer; font-family: 'Geist', sans-serif; transition: opacity 0.2s; }
+    .cta-submit:hover { opacity: 0.8; }
+
+    /* FOOTER */
+    .footer-brand { font-family: 'Instrument Serif', serif; font-size: 1.1rem; text-decoration: none; color: #0d0f14; }
+    .footer-brand em { color: var(--blue); font-style: italic; }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s, transform 0.6s; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .anim-1 { opacity: 0; animation: fadeUp 0.6s 0.1s forwards; }
+    .anim-2 { opacity: 0; animation: fadeUp 0.6s 0.25s forwards; }
+    .anim-3 { opacity: 0; animation: fadeUp 0.6s 0.4s forwards; }
+    .anim-4 { opacity: 0; animation: fadeUp 0.6s 0.55s forwards; }
+    .anim-5 { opacity: 0; animation: fadeUp 0.6s 0.7s forwards; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">Lin<em>gua</em></a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
+        <li class="nav-item"><a class="nav-link" href="#languages">Languages</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+        <a href="#" class="btn btn-nav-ghost text-decoration-none">Log in</a>
+        <a href="#" class="btn-primary-sm">Get started free</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="anim-1">
+      <span class="hero-badge"><span class="badge-dot"></span>AI-powered conversation practice</span>
+    </div>
+    <h1 class="anim-2">Learn any language,<br><em>naturally</em></h1>
+    <p class="hero-sub anim-3">Short daily sessions, real conversations, zero memorization drills. Lingua adapts to the way you learn.</p>
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-4 anim-4">
+      <a href="#" class="btn-hero">Start for free</a>
+      <a href="#how" class="btn-hero-outline">See how it works</a>
+    </div>
+    <p class="hero-note anim-5">No credit card required &nbsp;·&nbsp; 42 languages available</p>
+  </div>
+</section>
+
+<hr class="m-0" style="border-color: var(--border)"/>
+
+<!-- FEATURES -->
+<section class="py-5 my-4" id="features">
+  <div class="container">
+    <div class="reveal mb-4">
+      <p class="section-label">Features</p>
+      <h2 class="section-title">Everything you need<br>to <em>actually</em> speak</h2>
+      <p class="section-sub">Built for real fluency — not streaks, not points, not gamified busywork.</p>
+    </div>
+    <div class="row g-3 reveal">
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">🧠</div>
+          <div class="feat-title">Adaptive Learning</div>
+          <p class="feat-desc">Our AI adjusts difficulty in real time based on what you know and what you're forgetting.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">🗣️</div>
+          <div class="feat-title">AI Conversation</div>
+          <p class="feat-desc">Practice speaking with a patient AI tutor that corrects you gently and keeps you talking.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">🎧</div>
+          <div class="feat-title">Native Audio</div>
+          <p class="feat-desc">Every word recorded by native speakers from real regions — not text-to-speech.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">📅</div>
+          <div class="feat-title">Spaced Repetition</div>
+          <p class="feat-desc">Science-backed intervals surface words right before you'd forget them for good.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">🌍</div>
+          <div class="feat-title">Cultural Context</div>
+          <p class="feat-desc">Idioms, humor, and regional nuance that textbooks always leave out.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feat-card">
+          <div class="feat-icon">📊</div>
+          <div class="feat-title">CEFR Progress</div>
+          <p class="feat-desc">Know your exact level across speaking, listening, reading, and writing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS + VIDEO -->
+<section class="how-bg py-5 my-0" id="how">
+  <div class="container py-3">
+    <div class="reveal mb-4">
+      <p class="section-label">How it works</p>
+      <h2 class="section-title">From zero to <em>conversational</em><br>in three steps</h2>
+      <p class="section-sub">A simple, proven method that fits into your daily life.</p>
+    </div>
+    <div class="row g-5 align-items-center reveal">
+      <!-- Steps -->
+      <div class="col-lg-5">
+        <div class="d-flex flex-column gap-4">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Pick your language &amp; goal</div>
+              <p class="step-desc">Tell us why you're learning — travel, work, family — and we shape a path around you.</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3 align-items-start">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Do short daily sessions</div>
+              <p class="step-desc">10–15 minutes a day of focused conversation, listening, and reading practice.</p>
+            </div>
+          </div>
+          <div class="d-flex gap-3 align-items-start">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-title">Speak with real people</div>
+              <p class="step-desc">Graduate to live sessions with native speakers through our tutor network when ready.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Video -->
+      <div class="col-lg-7">
+        <div class="video-wrap" id="vw" onclick="playVideo()">
+          <div class="video-thumb" id="vt">
+            <div class="play-ring"><div class="play-tri"></div></div>
+            <span class="video-label">Watch a 2-min overview</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section class="py-5 my-4" id="languages">
+  <div class="container">
+    <div class="reveal mb-4">
+      <p class="section-label">Languages</p>
+      <h2 class="section-title">42 languages,<br>one <em>app</em></h2>
+      <p class="section-sub">Every course is built with the same depth and care — from Spanish to Swahili.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 reveal">
+      <span class="lang-pill">🇪🇸 Spanish</span>
+      <span class="lang-pill">🇫🇷 French</span>
+      <span class="lang-pill">🇩🇪 German</span>
+      <span class="lang-pill">🇯🇵 Japanese</span>
+      <span class="lang-pill">🇨🇳 Mandarin</span>
+      <span class="lang-pill">🇰🇷 Korean</span>
+      <span class="lang-pill">🇮🇹 Italian</span>
+      <span class="lang-pill">🇧🇷 Portuguese</span>
+      <span class="lang-pill">🇷🇺 Russian</span>
+      <span class="lang-pill">🇸🇦 Arabic</span>
+      <span class="lang-pill">🇳🇱 Dutch</span>
+      <span class="lang-pill">🇸🇪 Swedish</span>
+      <span class="lang-pill">🇵🇱 Polish</span>
+      <span class="lang-pill">🇹🇷 Turkish</span>
+      <span class="lang-pill">🇮🇳 Hindi</span>
+      <span class="lang-pill">+ 27 more →</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="container">
+    <h2>Start speaking today.<br><em>It's free.</em></h2>
+    <p>Join over 2 million learners worldwide.</p>
+    <div class="d-flex justify-content-center flex-wrap gap-2">
+      <input class="cta-input" type="email" placeholder="Enter your email"/>
+      <button class="cta-submit">Get started →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-4 border-top" style="border-color: var(--border) !important;">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <a href="#" class="footer-brand">Lin<em>gua</em></a>
+    <p class="mb-0" style="font-size:0.72rem; color: var(--muted);">© 2026 Lingua Inc. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 70);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Video click to load YouTube
+  function playVideo() {
+    const wrap = document.getElementById('vw');
+    wrap.innerHTML = `<iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0&modestbranding=1"
+      allow="autoplay; encrypted-media; fullscreen"
+      allowfullscreen>
+    </iframe>`;
+  }
+</script>
+</body>
+</html>

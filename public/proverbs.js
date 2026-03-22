@@ -19,7 +19,7 @@ function renderCards(filtered) {
     return;
   }
   noResults.classList.remove('show');
-
+s
   if (activeLang === 'all') {
     let html = '';
     langs.forEach(code => {
